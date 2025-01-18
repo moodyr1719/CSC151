@@ -1,0 +1,176 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class ShapeCalculator {
+    private static ArrayList<Shape> shapes = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        boolean running = true;
+        while (running) {
+            displayMenu();
+            int choice = scanner.nextInt();
+            
+            switch (choice) {
+                case 1:
+                    addCircle();
+                    break;
+                case 2:
+                    addRectangle();
+                    break;
+                case 3:
+                    addTriangle();
+                    break;
+                case 4:
+                    compareShapes();
+                    break;
+                case 5:
+                    running = false;
+                    System.out.println("Thank you for using the Shape Calculator!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        scanner.close();
+    }
+
+    private static void displayMenu() {
+        System.out.println("\n=== Shape Calculator ===");
+        System.out.println("1. Add Circle");
+        System.out.println("2. Add Rectangle");
+        System.out.println("3. Add Triangle");
+        System.out.println("4. Compare Shapes");
+        System.out.println("5. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void addCircle() {
+        System.out.print("Enter radius: ");
+        double radius = scanner.nextDouble();
+        shapes.add(new Circle(radius));
+        System.out.println("Circle added successfully!");
+    }
+
+    private static void addRectangle() {
+        System.out.print("Enter length: ");
+        double length = scanner.nextDouble();
+        System.out.print("Enter width: ");
+        double width = scanner.nextDouble();
+        shapes.add(new Rectangle(length, width));
+        System.out.println("Rectangle added successfully!");
+    }
+
+    private static void addTriangle() {
+        System.out.print("Enter base: ");
+        double base = scanner.nextDouble();
+        System.out.print("Enter height: ");
+        double height = scanner.nextDouble();
+        System.out.print("Enter side 1: ");
+        double side1 = scanner.nextDouble();
+        System.out.print("Enter side 2: ");
+        double side2 = scanner.nextDouble();
+        shapes.add(new Triangle(base, height, side1, side2));
+        System.out.println("Triangle added successfully!");
+    }
+
+    private static void compareShapes() {
+        if (shapes.size() < 1) {
+            System.out.println("No shapes to compare. Please add some shapes first.");
+            return;
+        }
+
+        System.out.println("\n=== Shape Comparison ===");
+        for (int i = 0; i < shapes.size(); i++) {
+            Shape shape = shapes.get(i);
+            System.out.printf("Shape %d (%s):%n", i + 1, shape.getClass().getSimpleName());
+            System.out.printf("Area: %.2f%n", shape.getArea());
+            System.out.printf("Perimeter: %.2f%n%n", shape.getPerimeter());
+        }
+
+        // Find shapes with largest area and perimeter
+        Shape largestArea = shapes.get(0);
+        Shape largestPerimeter = shapes.get(0);
+
+        for (Shape shape : shapes) {
+            if (shape.getArea() > largestArea.getArea()) {
+                largestArea = shape;
+            }
+            if (shape.getPerimeter() > largestPerimeter.getPerimeter()) {
+                largestPerimeter = shape;
+            }
+        }
+
+        System.out.printf("Largest Area: %s (%.2f)%n", 
+            largestArea.getClass().getSimpleName(), largestArea.getArea());
+        System.out.printf("Largest Perimeter: %s (%.2f)%n", 
+            largestPerimeter.getClass().getSimpleName(), largestPerimeter.getPerimeter());
+    }
+}
+
+abstract class Shape {
+    abstract double getArea();
+    abstract double getPerimeter();
+}
+
+class Circle extends Shape {
+    private double radius;
+
+    public Circle(double radius) {
+        this.radius = radius;
+    }
+
+    @Override
+    double getArea() {
+        return Math.PI * radius * radius;
+    }
+
+    @Override
+    double getPerimeter() {
+        return 2 * Math.PI * radius;
+    }
+}
+
+class Rectangle extends Shape {
+    private double length;
+    private double width;
+
+    public Rectangle(double length, double width) {
+        this.length = length;
+        this.width = width;
+    }
+
+    @Override
+    double getArea() {
+        return length * width;
+    }
+
+    @Override
+    double getPerimeter() {
+        return 2 * (length + width);
+    }
+}
+
+class Triangle extends Shape {
+    private double base;
+    private double height;
+    private double side1;
+    private double side2;
+
+    public Triangle(double base, double height, double side1, double side2) {
+        this.base = base;
+        this.height = height;
+        this.side1 = side1;
+        this.side2 = side2;
+    }
+
+    @Override
+    double getArea() {
+        return 0.5 * base * height;
+    }
+
+    @Override
+    double getPerimeter() {
+        return base + side1 + side2;
+    }
+}
